@@ -1,5 +1,8 @@
 var express = require('express');
 var app = express();
+
+require('./sign_in/load.js')({app: app});
+
 app.use(express.static('public'));
 
 app.get('/', function (req, res) {
