@@ -1,24 +1,10 @@
 var express = require('express');
 var app = express();
 
-require('./sign_in/load.js')({app: app});
-
-app.use(express.static('public'));
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
-app.get('/soundex', function (req, res) {
-  res.send(req.params.word);
-});
-
 app.use('/static', express.static(__dirname + '/public'));
 
-require("./test")({app: app});
-var server = app.listen(8080, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+require('./sign_in/load.js')({app: app});
+require('./sign_up/load.js')({app: app});
+require("./sms/sms.js")({app:app});
 
-  console.log('Example app listening at http://%s:%s', host, port);
-});
+require("./server.js")({app:app});
