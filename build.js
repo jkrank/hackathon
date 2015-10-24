@@ -29,7 +29,7 @@ module.exports = function () {
   function createUsers (err) {
     if (err) { console.log(err); return; }
     console.log("CREATE TABLE users");
-    conn.query("CREATE TABLE users( id INTEGER NOT NULL AUTO_INCREMENT, user_name VARCHAR(255), phone_number VARCHAR(255), scores INTEGER, PRIMARY KEY(id))engine=INNODB", populate);
+    conn.query("CREATE TABLE users( id INTEGER NOT NULL AUTO_INCREMENT, user_name VARCHAR(255), phone_number VARCHAR(255), scores INTEGER, status INTEGER DEFAULT 0, PRIMARY KEY(id))engine=INNODB", populate);
   }
 
   function populate (err) {
