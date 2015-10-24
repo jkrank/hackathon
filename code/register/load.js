@@ -10,7 +10,8 @@ module.exports = function(params)
 
     conn.query("INSERT INTO users SET ?", user, function (err, resp) {
       if (err) {
-        console.log(err); res.send("PROBLEM");
+        console.log(err);
+        res.send("PROBLEM");
         return;
       }
 
