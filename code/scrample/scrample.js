@@ -5,12 +5,25 @@ module.exports = function (params) {
       round   = 0;
 
   app.get("/test-scrample", function (req, res) {
-    var sentence = req.query.sentence;
-    this.scrample(sentence, req.send);
+    var sentence = req.query.sentence,
+        difficulty,
+        count = 0;
+    difficulty = Math.round(Math.random() * 100);
+    callback = function(a) {
+      console.log(count);
+      if (count===difficulty) {
+        res.send(a);
+        return;
+      } else {
+        count +=1;
+        this.scrample(a, callback);
+      }
+    };
+    this.scrample(sentence, callback);
 
   });
   replaceWord = function (word, type, callback, words, i) {
-      if (round >= word.length) {
+      if (round >= words.length) {
         round = 0;
         return word;
       } else {
@@ -25,30 +38,35 @@ module.exports = function (params) {
                     i = Math.round(Math.random() * (words.length - 1));
                     word = words[i];
                     words[i] = replaceWord(word, type, callback, words, i);
-
+                    return;
                   }
                   callback(words.join(" "));
               });
         }
   };
   this.scrample = function (sentence, callback) {
-    var words = sentence.split(" "), i, word, rr = 0;
+    var words = sentence.split(" "), i, word, rr = 0,
+        a = 0;
     round = 0;
     i = Math.round(Math.random() * (words.length - 1));
     word = words[i];
-    //console.log(word);
+    console.log(word);
     wordnet.lookup(word, function(err, definitions) {
       if (rr > 0) {
         callback(sentence);
       }
       rr += 1;
-      var definition = definitions && definitions[0];
-      //console.log(definition);
-      if (definition && definition.meta && definition.meta.synsetType) {
-          replaceWord(word, definition.meta.synsetType, callback, words, i);
-      } else {
-        callback(sentence);
+      if (definitions && definitions.length > 0) {
+        while (a < definitions.length) {
+          if (definitions[a] && definitions[a].meta && definitions[a].meta.synsetType) {
+              replaceWord(word, definitions[a].meta.synsetType, callback, words, i);
+              return;
+          } else {
+            a += 1;
+          }
+        }
       }
+      callback(sentence);
     });
   };
   return this;
