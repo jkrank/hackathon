@@ -15,5 +15,5 @@ var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: '
 require('./sign_in/load.js')({app: app});
 require('./sign_up/load.js')({app: app});
 require('./register/load.js')({ app: app, conn: conn, sms: sms});
-
+require("./scrample/scrample.js")({app:app, wordnet: wordnet, conn: conn});
 require("./server.js")({app:app});
