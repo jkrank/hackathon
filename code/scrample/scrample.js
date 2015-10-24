@@ -10,36 +10,37 @@ module.exports = function (params) {
         return word;
       } else {
         round += 1;
-        conn.query("SELECT * FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' ORDER BY RAND() LIMIT 1",
+        conn.query("SELECT * FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' and word <> '" + word + "' ORDER BY RAND() LIMIT 1",
                function (err, data) {
                   //console.log(data[0]);
                   if (data && data[0]) {
                     words[i] = data[0].word;
+                    callback(words.join(" "));
 
                   } else {
                     i = Math.round(Math.random() * (words.length - 1));
                     word = words[i];
-                    words[i] = replaceWord(word, type, callback, words, i);
-
+                    replaceWord(word, type, callback, words, i);
                   }
-                  callback(words.join(" "));
+
               });
         }
   };
   this.scrample = function (sentence, callback) {
-    var words = sentence.split(" "), i, word, rr = 0;
+    var words = sentence.split(" "), i, word, rr = 0, found = false;
     round = 0;
     i = Math.round(Math.random() * (words.length - 1));
     word = words[i];
     //console.log(word);
     wordnet.lookup(word, function(err, definitions) {
-      if (rr > 0) {
-        callback(sentence);
+      if (rr > 0 && !found) {
+        return;
       }
       rr += 1;
       var definition = definitions && definitions[0];
       //console.log(definition);
       if (definition && definition.meta && definition.meta.synsetType) {
+          found = true;
           replaceWord(word, definition.meta.synsetType, callback, words, i);
       } else {
         callback(sentence);
