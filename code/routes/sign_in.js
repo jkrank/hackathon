@@ -1,3 +1,3 @@
 exports.sign_in = function(req, res){
-  res.render('sign_in', { name: 'John', title: 'Sign In' });
+  res.render('../views/sign_in.jsx', { name: 'John', title: 'Sign In' });
 };
