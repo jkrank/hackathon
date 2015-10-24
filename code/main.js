@@ -1,4 +1,7 @@
 var express = require('express');
+var wordnet = require("wordnet");
+var mysql = require('mysql');
+var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
 var app = express();
 
 app.set('views', __dirname + '/views');
