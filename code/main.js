@@ -1,5 +1,9 @@
 var express = require('express');
 var app = express();
+
+require('./sign_in/load.js')({app: app});
+require('./sms/sms.js')({app: app});
+
 app.use(express.static('public'));
 
 app.set('views', __dirname + '/views');
