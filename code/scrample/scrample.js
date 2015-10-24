@@ -4,13 +4,18 @@ module.exports = function (params) {
       wordnet = params.wordnet,
       round   = 0;
 
+  app.get("/test-scrample", function (req, res) {
+    var sentence = req.query.sentence;
+    this.scrample(sentence, req.send);
+
+  });
   replaceWord = function (word, type, callback, words, i) {
       if (round >= word.length) {
         round = 0;
         return word;
       } else {
         round += 1;
-        conn.query("SELECT *, levenshtein(word, "ball") a, rand() b FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' HAVING a<>0 ORDER BY a, b LIMIT 1",
+        conn.query("SELECT *, levenshtein(word, '"+word+"') a, rand() b FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' HAVING a<>0 ORDER BY a, b LIMIT 1",
                function (err, data) {
                   //console.log(data[0]);
                   if (data && data[0]) {
