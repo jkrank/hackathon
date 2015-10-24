@@ -1,13 +1,16 @@
 var express = require('express');
 var app = express();
+app.use(express.static('public'));
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
 app.get('/soundex', function (req, res) {
-  res.send(req.param("word"));
+  res.send(req.params.word);
 });
+
+app.use('/static', express.static(__dirname + '/public'));
 
 var server = app.listen(8080, function () {
   var host = server.address().address;
