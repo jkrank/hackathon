@@ -10,7 +10,7 @@ module.exports = function (params) {
         return word;
       } else {
         round += 1;
-        conn.query("SELECT * FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' ORDER BY RAND() LIMIT 1",
+        conn.query("SELECT *, levenshtein(word, "ball") a, rand() b FROM words where soundex(word) = soundex('" + word + "') and type = '" + type + "' HAVING a<>0 ORDER BY a, b LIMIT 1",
                function (err, data) {
                   //console.log(data[0]);
                   if (data && data[0]) {
