@@ -8,7 +8,7 @@ module.exports = function(params)
           from   = req.query.from,
           text   = req.query.content,
           msg_id = req.query.msg_id;
-
+      console.log("from: "+from+" message: "+text);
       res.send("api_key: "+api_key+"<br>from: "+from+"<br>to"+to+"<br>content: "+text)
     });
     app.get('/send-sms', function (req, res) {
@@ -17,12 +17,16 @@ module.exports = function(params)
       res.send(this.sendSMS(to, content));
     });
 
+  registerNewPhrase = function() {
+
+  }
+
   sendSMS = function(to, text) {
       var options = {
             host: "api.clockworksms.com",
             port: 443,
             path: "/http/send.aspx?key="+api_key
-                    +"&from=BrokePhone",
+                    +"&from=447860033599",
           },
           success = false;
 
@@ -51,5 +55,5 @@ module.exports = function(params)
 
       return http.request(options, callback).end();
   };
-
+  return this;
 }
