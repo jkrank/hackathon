@@ -33,28 +33,32 @@ module.exports = function () {
   }
 
   function populate (err) {
-    if (err) { console.log(err); return; }
+    if (err) {
+      console.log(err); return;
+    }
     console.log("populate words");
+    var insert_els = [];
     lineReader.eachLine('words', function(line, last) {
       wordnet.lookup(line, function(err, definitions) {
         if (definitions) {
            definitions.forEach(function(definition) {
              if (definition.meta && definition.meta.synsetType) {
-               var obj = { word: line, type: definition.meta.synsetType };
-               conn.query("INSERT INTO words SET ?",obj, function (er,re) {
-                  if (er) {
-                    console.log(er);
-                  } else {
-                    console.log(re.insertId);
-                  }
-               });
-              console.log('  type: %s', definition.meta.synsetType);
-            }
-          });
+               insert_els.push([line, definition.meta.synsetType]);
+             }
+           });
         }
       });
+      if (last && insert_els.length > 0) {
+        conn.query("INSERT INTO words (word, type) VALUES ?", [insert_els], function (er, re) {
+          if (er) {
+            console.log(er);
+          } else {
+            console.log('inserted ' + re.affectedRows + ' rows')
+          }
+          conn.end();
+        });
+      }
     });
   }
-
   return this;
 }
