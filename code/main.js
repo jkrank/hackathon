@@ -13,7 +13,8 @@ app.get('/', function (req, res) {
 });
 
 app.get('/soundex', function (req, res) {
-  res.send(req.params.word);
+  res.send(req.query.word);
+  res.sen
 });
 
 app.use('/static', express.static(__dirname + '/public'));
