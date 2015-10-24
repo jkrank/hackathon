@@ -12,6 +12,7 @@ app.get('/soundex', function (req, res) {
 
 app.use('/static', express.static(__dirname + '/public'));
 
+require("./test")({app: app});
 var server = app.listen(8080, function () {
   var host = server.address().address;
   var port = server.address().port;
