@@ -11,13 +11,13 @@ module.exports = function(params)
     conn.query("INSERT INTO users SET ?", user, function (err, resp) {
       if (err) {
         console.log(err);
-        res.send("PROBLEM");
+        res.render('../views/sign_in_failed.jsx', { name: name, title: 'Sign In Failed' });
         return;
       }
 
       sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with your phrase");
 
-      res.send("Thank you. We've send you confirmation to your phone number")
+      rres.render('../views/sign_in_success.jsx', { name: name, title: 'Sign In Successfull' });
     });
 
 
