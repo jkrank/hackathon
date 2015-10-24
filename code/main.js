@@ -7,7 +7,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 
-app.use('/static', express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 var sms    = require("./sms/sms.js")({app:app});
 var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
