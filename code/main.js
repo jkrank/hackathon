@@ -1,8 +1,6 @@
 var express = require('express');
 var wordnet = require("wordnet");
 var mysql  = require('mysql');
-var sms    = require("./sms/sms.js")({app:app});
-var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
 var app = express();
 
 app.set('views', __dirname + '/views');
@@ -11,7 +9,11 @@ app.engine('jsx', require('express-react-views').createEngine());
 
 app.use('/static', express.static(__dirname + '/public'));
 
+var sms    = require("./sms/sms.js")({app:app});
+var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
+
 require('./sign_in/load.js')({app: app});
 require('./sign_up/load.js')({app: app});
+require('./register/load.js')({ app: app, conn: conn, sms: sms});
 
 require("./server.js")({app:app});
