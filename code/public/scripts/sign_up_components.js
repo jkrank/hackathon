@@ -5,12 +5,12 @@ var RegisterImg = React.createClass({
   })
   , FullName = React.createClass({
       render: function() {
-        return <input type="text" className="form-control space_top" placeholder="Full Name"/>;
+        return <input type="text" name="name" className="form-control space_top" placeholder="Full Name"/>;
       }
   })
   , PhoneNumber = React.createClass({
       render: function() {
-        return <input type="tel" className="form-control space_top" placeholder="Phone Number"/>;
+        return <input type="tel" name="phone" className="form-control space_top" placeholder="Phone Number"/>;
       }
   })
   , SubmitButton = React.createClass({

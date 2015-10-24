@@ -3,9 +3,9 @@ module.exports = function(params)
   var app  = params.app,
       conn = params.conn,
       sms  = params.sms;
-  app.post('/register', function (reg, res) {
-    var name = req.query.name,
-        phone = req.query.phone,
+  app.post('/register', function (req, res) {
+    var name = req.body.name,
+        phone = req.body.phone,
         user  = {user_name: name, phone_number: phone };
 
     conn.query("INSERT INTO users SET ?", user, function (err, resp) {
@@ -15,7 +15,7 @@ module.exports = function(params)
         return;
       }
 
-      sms.sendSMS(phone, "Thank you for registering");
+      sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with your phrase");
 
       res.send("Thank you. We've send you confirmation to your phone number")
     });
