@@ -1,33 +1,36 @@
-module.exports = function(params) {
-  var app = params.app,
+module.exports = function(params)
+{
+  var app  = params.app,
       conn = params.conn,
-      sms = params.sms;
+      sms  = params.sms;
   app.post('/register', function (req, res) {
     var name = req.body.name,
         phone = req.body.phone || '',
-        user = {user_name: name, phone_number: phone };
+        user  = {user_name: name, phone_number: phone, active_challenge: 0 };
+
     if (!new RegExp("^\\d+$").test(phone.replace(/\D/g, '').replace(' ', ''))) {
-       res.redirect(301, '/sign_up_failed?err=1');
+       res.render('../views/sign_up_failed.jsx', { name: name, title: 'Sign Up Failed' });
        return;
     }
+
     conn.query("SELECT id from users WHERE phone_number = ?", [phone], function (err, result) {
         if (err) {
-           console.log(err);
-           res.redirect(301, '/sign_up_failed?err=2');
-           return;
+            console.log(err);
+            res.render('../views/sign_up_failed.jsx', { name: name, title: 'Error while validating phone number' });
+            return;
         }
         if (result.length > 0) {
-          res.redirect(301, '/sign_up_failed?err=3');
+          res.send("This phone number is already registered");
           return;
         }
         conn.query("INSERT INTO users SET ?", user, function (err, resp) {
           if (err) {
             console.log(err);
-            res.redirect(301, '/sign_up_failed?err=4');
+            res.render('../views/sign_up_failed.jsx', { name: name, title: 'Sign Up Failed' });
             return;
           }
-          sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with your phrase");
-          res.redirect(301, '/sign_up_success');
+          sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with the phrase you want to challenge others with.");
+          res.render('../views/sign_up_success.jsx', { name: name, title: 'Sign Up Successfull' });
         });
     });
   });
