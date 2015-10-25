@@ -22,4 +22,5 @@ require('./sign_in_failed/load.js')({app: app});
 require('./sign_up_success/load.js')({app: app});
 require('./register/load.js')({ app: app, conn: conn, sms: sms});
 require("./scrample/scrample.js")({app:app, wordnet: wordnet, conn: conn});
+require("./game/load.js")({ app: app, conn: conn, sms: sms});
 require("./server.js")({app:app});
