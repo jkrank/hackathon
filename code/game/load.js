@@ -60,7 +60,7 @@ module.exports = function(params)
     //conn.query("SELECT status, dereg FROM users WHERE id = ?", [obj.id], function (err, rows) {
     console.log(obj.phrase);
     //conn.query("SELECT A.status as status, A.dereg as dereg, B.id as id FROM users A LEFT JOIN challenge B ON A.id = B.user_id  WHERE A.id = ? AND B.reply IS NULL;", [obj.user_id], function(err, rows){
-    conn.query("SELECT A.status as status, A.dereg as dereg, B.id as id FROM users A LEFT JOIN challenge B ON A.id = B.user_id  WHERE A.id = ?;", [obj.user_id], function(err, rows){
+    conn.query("SELECT A.status as status, A.dereg as dereg, A.active_challenge as active_challenge FROM users A WHERE A.id = ?;", [obj.user_id], function(err, rows){
       if (err || !rows || rows.length === 0) {
         console.log(err);
           cb("PROBLEM checkUserActive");
@@ -70,8 +70,8 @@ module.exports = function(params)
         cb("user already deregistered");
       } else if (rows[0].status === 0) {
         processFirstPhrase(obj, cb);
-      } else if (rows[0].id) {
-        obj.challenge_id = rows[0].id;
+      } else if (rows[0].active_challenge) {
+        obj.challenge_id = rows[0].active_challenge;
         processSubmission(obj, cb);
       } else {
         processFirstPhrase(obj, cb);
@@ -92,6 +92,8 @@ module.exports = function(params)
 
   function processSubmission(obj, cb) {
     var params = {};
+    console.log(obj.challenge_id);
+    console.log(obj.phrase);
     conn.query("SELECT *, levenshtein(phrase, ?) as dist FROM challenge A JOIN phrase B ON A.phrase_id = B.id AND A.id=?;", [ obj.phrase, obj.challenge_id], function(err, rows){
       if (err || !rows || rows.length === 0) {
         console.log(err);
@@ -148,10 +150,10 @@ module.exports = function(params)
           cb("PROBLEM processFirstSubmission - update status");
           return;
         }
-        scrample.startScrample(obj.phrase, function (phrase) {
-          obj.phrase = phrase;
+        //scrample.startScrample(obj.phrase, function (phrase) {
+        //  obj.phrase = phrase;
           addPhrase(obj, sendChallenge, cb);
-        });
+        //});
 
       });
   }
@@ -175,6 +177,7 @@ module.exports = function(params)
               return;
             }
             console.log("INSERT ID: "+result.insertId);
+
           obj.phrase_id = result.insertId;
           if (next && typeof next === "function") {
             next(obj, cb);
@@ -208,7 +211,8 @@ module.exports = function(params)
       params = {
         phrase_id  : obj.orig_phrase || obj.phrase_id,  // This should chain, send the new phrase, but link to the originally submitted phrase
         user_id    : rows[0].id,
-        phone_number: rows[0].phone_number
+        phone_number: rows[0].phone_number,
+        challenge_id: obj.challenge_id
       };
       console.log(params.phrase_id);
       console.log(params.user_id);
@@ -218,7 +222,8 @@ module.exports = function(params)
           cb("PROBLEM sendChallenge - inserting challenge");
           return;
         }
-        conn.query("UPDATE users SET active_challenge = 1 WHERE id = ?", [params.user_id], function(err){
+        params.challenge_id = result.insertId;
+        conn.query("UPDATE users SET active_challenge = ? WHERE id = ?", [params.challenge_id, params.user_id], function(err){
            if (err) {
              console.log(err);
              cb("PROBLEM sendChallenge - inserting challenge");
