@@ -1,14 +1,14 @@
 var React = require('react');
 var DefaultLayout = require('./layouts/default');
 
-var HelloMessage = React.createClass({
+var index = React.createClass({
   render: function() {
     return (
-      <DefaultLayout title={this.props.title}>
-        <div>Hello {this.props.name}</div>
+      <DefaultLayout {...this.props}>
+      <div id="register_form_container"></div>
       </DefaultLayout>
     );
   }
 });
 
-module.exports = HelloMessage;
+module.exports = index;
