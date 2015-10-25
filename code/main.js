@@ -16,6 +16,7 @@ app.use(express.static(__dirname + '/public'));
 var sms    = require("./sms/sms.js")({app:app});
 var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
 
+require('./index/load.js')({app: app});
 require('./sign_up/load.js')({app: app});
 require('./sign_up_failed/load.js')({app: app});
 require('./sign_up_success/load.js')({app: app});
