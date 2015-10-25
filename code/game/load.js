@@ -129,8 +129,10 @@ module.exports = function(params)
             return;
         }
         if (obj.score === 0 ) {
+          sms.sendSMS(obj.phone_number, "Sorry - not correct this time!  Stay tuned for the next whisper");
           sendChallenge(obj, cb);
         } else {
+          sms.sendSMS(obj.phone_number, "Correct!  10 points to you - dont forget to check your rank on our site");
           cb("Submission sucessful");
         }
       });
