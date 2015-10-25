@@ -1,7 +1,9 @@
 module.exports = function(params)
 {
   var app  = params.app,
-      conn = params.conn;
+      conn = params.conn,
+      sms  = require("../sms/sms.js")({app:app}),
+      scrample = params.scrample;
 
   app.get("/test-game", function(req, res){
     var phone_number = req.query.phone_number,
@@ -14,6 +16,10 @@ module.exports = function(params)
 
     phoneNumberToUser(obj, processMessage, returnResult);
   });
+
+  app.handleMessage = function(obj, cb) {
+    phoneNumberToUser(obj, processMessage, cb);
+  }
 
   function phoneNumberToUser(obj, next, cb) {
     var param = {};
@@ -68,7 +74,7 @@ module.exports = function(params)
         obj.challenge_id = rows[0].id;
         processSubmission(obj, cb);
       } else {
-        cb("Very odd state");
+        processFirstPhrase(obj, cb);
       }
     });
   }
@@ -92,7 +98,8 @@ module.exports = function(params)
         cb("PROBLEM processSubmission");
         return;
       }
-      if (rows[0].dist <2){
+      obj.orig_phrase = rows[0].phrase_id;
+      if (rows[0].dist ===0){
         obj.score = 10;
       } else {
         obj.score = 0;
@@ -110,10 +117,22 @@ module.exports = function(params)
     conn.query("UPDATE challenge SET reply = ?, replied_at = NOW(), score = ? WHERE id = ?", [ params.reply, params.score, params.id ], function(err){
       if (err) {
         console.log(err);
-          cb("PROBLEM processFirstSubmission - update status");
+          cb("PROBLEM addScore - update challenge");
           return;
       }
-      cb("Submission sucessful");
+      conn.query("UPDATE users SET active_challenge = 0, scores = scores+? WHERE id = ?", [ obj.score, obj.user_id ], function(err){
+        if (err) {
+          console.log(err);
+            cb("PROBLEM addScore - update user");
+            return;
+        }
+        if (obj.score === 0 ) {
+          sendChallenge(obj, cb);
+        } else {
+          cb("Submission sucessful");
+        }
+      });
+
     })
 
   }
@@ -129,7 +148,11 @@ module.exports = function(params)
           cb("PROBLEM processFirstSubmission - update status");
           return;
         }
-        addPhrase(obj, null, cb);
+        scrample.startScrample(obj.phrase, function (phrase) {
+          obj.phrase = phrase;
+          addPhrase(obj, sendChallenge, cb);
+        });
+
       });
   }
 
@@ -170,8 +193,46 @@ module.exports = function(params)
     });
   }
 
-  function sendChallenge(user_id, callback) {
+  function sendChallenge(obj, cb) {
+    var params;
+    conn.query("SELECT * FROM users WHERE active_challenge = 0 AND status = 1 AND id<> ? ORDER BY RAND() LIMIT 1", [obj.user_id], function(err, rows){
+      if (err) {
+        console.log(err);
+        cb("PROBLEM sendChallenge - find competitor");
+        return;
+      }
+      if (rows.length == 0) {
+        cb("no competitors");
+        return;
+      }
+      params = {
+        phrase_id  : obj.orig_phrase || obj.phrase_id,  // This should chain, send the new phrase, but link to the originally submitted phrase
+        user_id    : rows[0].id,
+        phone_number: rows[0].phone_number
+      };
+      console.log(params.phrase_id);
+      console.log(params.user_id);
+      conn.query("INSERT INTO challenge(phrase_id, user_id, sent_at) VALUES(?,?,now())",[ params.phrase_id, params.user_id ], function(err,result){
+        if (err) {
+          console.log(err);
+          cb("PROBLEM sendChallenge - inserting challenge");
+          return;
+        }
+        conn.query("UPDATE users SET active_challenge = 1 WHERE id = ?", [params.user_id], function(err){
+           if (err) {
+             console.log(err);
+             cb("PROBLEM sendChallenge - inserting challenge");
+             return;
+           }
+          scrample.startScrample(obj.phrase, function(phrase){
+            obj.phrase = phrase;
+            sms.sendSMS(params.phone_number, obj.phrase)
+            cb("success");
+          });
 
+        });
+      });
+    });
   }
 
   return this;

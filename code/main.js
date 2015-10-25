@@ -13,8 +13,11 @@ app.engine('jsx', require('express-react-views').createEngine());
 
 app.use(express.static(__dirname + '/public'));
 
-var sms    = require("./sms/sms.js")({app:app});
+
+var sms  = require("./sms/sms.js")({app:app});
 var conn = mysql.createConnection({ host: 'localhost', user: 'root', password: 'x', database: 'whispers' });
+var scrample = require("./scrample/scrample.js")({app:app, wordnet: wordnet, conn: conn});
+var game = require("./game/load.js")({ app: app, conn: conn, scrample:scrample});
 
 require('./index/load.js')({app: app});
 require('./sign_up/load.js')({app: app});
@@ -22,6 +25,4 @@ require('./sign_up_failed/load.js')({app: app});
 require('./sign_up_success/load.js')({app: app});
 require('./getStatistics/load.js')({app: app, conn: conn});
 require('./register/load.js')({ app: app, conn: conn, sms: sms});
-require("./scrample/scrample.js")({app:app, wordnet: wordnet, conn: conn});
-require("./game/load.js")({ app: app, conn: conn, sms: sms});
 require("./server.js")({app:app});

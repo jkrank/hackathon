@@ -22,6 +22,22 @@ module.exports = function (params) {
     this.scrample(sentence, callback);
 
   });
+  this.startScrample = function (sentence, cb) {
+    var difficulty,
+        count = 0;
+    difficulty = Math.round(Math.random() * 100);
+    callback = function(a) {
+      console.log(count);
+      if (count===difficulty) {
+        cb(a);
+        return;
+      } else {
+        count +=1;
+        this.scrample(a, callback);
+      }
+    };
+    this.scrample(sentence, callback);
+  };
   replaceWord = function (word, type, callback, words, i) {
       if (round >= words.length) {
         round = 0;

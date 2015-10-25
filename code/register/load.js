@@ -6,7 +6,7 @@ module.exports = function(params)
   app.post('/register', function (req, res) {
     var name = req.body.name,
         phone = req.body.phone || '',
-        user  = {user_name: name, phone_number: phone };
+        user  = {user_name: name, phone_number: phone, active_challenge: 0 };
 
     if (!new RegExp("^\\d+$").test(phone.replace(/\D/g, '').replace(' ', ''))) {
        res.render('../views/sign_up_failed.jsx', { name: name, title: 'Sign Up Failed' });
@@ -29,7 +29,7 @@ module.exports = function(params)
             res.render('../views/sign_up_failed.jsx', { name: name, title: 'Sign Up Failed' });
             return;
           }
-          sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with your phrase");
+          sms.sendSMS(phone, "Welcome to BrokePhone! Reply to this message with the phrase you want to challenge others with.");
           res.render('../views/sign_up_success.jsx', { name: name, title: 'Sign Up Successfull' });
         });
     });

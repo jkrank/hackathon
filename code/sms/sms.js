@@ -2,14 +2,21 @@ module.exports = function(params)
 {
   var app = params.app,
       http = require("https"),
-      api_key = require("./clockwork_api_key.js");
+      api_key = require("./clockwork_api_key.js"),
+      game = params.game;
     app.get('/receive-sms', function (req, res) {
       var to     = req.query.to,
           from   = req.query.from,
           text   = req.query.content,
           msg_id = req.query.msg_id;
+      obj = {phone_number: from, phrase: text};
+
       console.log("from: "+from+" message: "+text);
-      res.send("api_key: "+api_key+"<br>from: "+from+"<br>to"+to+"<br>content: "+text)
+      app.handleMessage(obj, function(a){
+        console.log(a);
+        res.send(a);
+      })
+      //res.send("api_key: "+api_key+"<br>from: "+from+"<br>to"+to+"<br>content: "+text)
     });
     app.get('/send-sms', function (req, res) {
       var to = req.query.to,
