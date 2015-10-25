@@ -25,8 +25,11 @@ var page = {};
     return false;
   };
   lib.handleForm = function (e) {
-     var $form = $(this);
-     if (lib.isMobile($form.find("input[name='phone']").val())) {
+     var $form = $(this)
+       , $form_tel = $form.find("input[name='phone']")
+       , tel_number = $form_tel.val();
+     if (lib.isMobile(tel_number)) {
+       $form_tel.val(lib.normalizeNumber(tel_number));
        return true;
      }
      e.preventDefault();

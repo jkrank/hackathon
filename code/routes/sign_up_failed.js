@@ -13,7 +13,7 @@ exports.sign_up_failed = function(req, res){
      , "//cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"
      , "//code.jquery.com/jquery-1.11.3.min.js"
      , "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-     , "scripts/sign_up_main.js"
+     , "scripts/sign_up_failed.js"
     ]
     , front_end_embedded_scripts: []
     , front_end_babel_includes: [
