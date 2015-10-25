@@ -32,8 +32,11 @@ var table_data = {headers: ["#", "Full Name", "Phone", "Score"]
   });
 ReactDOM.render(
   <div className="container-fluid">
-    <div className="col-md-6 col-sm-6 col-sm-offset-3  ">
+    <div className="col-md-6 col-sm-6 col-sm-offset-3">
       <RegisterImg />
+      <div className="text-center space_top">
+        <a href="/sign_up" className='btn btn-danger'>Join in</a>
+      </div>
       <RankingTable />
     </div>
   </div>

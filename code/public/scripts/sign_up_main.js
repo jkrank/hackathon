@@ -27,13 +27,24 @@ var page = {};
   lib.handleForm = function (e) {
      var $form = $(this)
        , $form_tel = $form.find("input[name='phone']")
+       , $form_name = $form.find("input[name='name']")
        , tel_number = $form_tel.val();
-     if (lib.isMobile(tel_number)) {
-       $form_tel.val(lib.normalizeNumber(tel_number));
-       return true;
-     }
-     e.preventDefault();
+
+    function killSubmit (event) {
+     event.preventDefault();
      return false;
+    }
+
+    if ($form_name.val().length <= 0) {
+      $form_name.parent().addClass("has-error");
+      return killSubmit(e);
+    }
+    if (!lib.isMobile(tel_number)) {
+      $form_tel.parent().addClass("has-error");
+      return killSubmit(e);
+    }
+    $form_tel.val(lib.normalizeNumber(tel_number));
+    return true;
   };
   lib.ready = function () {
     console.log("ready");

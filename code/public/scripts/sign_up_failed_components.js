@@ -13,7 +13,7 @@ ReactDOM.render(
         <span className="sr-only">Error:</span>
         Failure during registration {page.lib.sign_up_errors[window.location.toString().split("err=")[1]]}
       </div>
-      <a href="/sign_up" className='btn btn-danger'>Register</a>
+      <a href="/sign_up" className='btn btn-danger'>Join In</a>
     </div>
   </div>
 , register_form_container);
