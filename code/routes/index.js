@@ -1,7 +1,6 @@
 exports.index = function(req, res){
   var page_props = {
-      name     : 'John'
-    , title    : 'Welcome'
+      title    : 'Welcome'
     , front_end_css_includes : [
       "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
     , "https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css"
@@ -14,11 +13,11 @@ exports.index = function(req, res){
      , "//cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"
      , "//code.jquery.com/jquery-1.11.3.min.js"
      , "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-     , "scripts/sign_up_main.js"
+     , "scripts/index_main.js"
     ]
     , front_end_embedded_scripts: []
     , front_end_babel_includes: [
-      "scripts/index.js"
+      "scripts/index_components.js"
     ]
   };
   res.render('index', page_props);

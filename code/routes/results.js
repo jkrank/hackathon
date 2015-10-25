@@ -1,7 +1,6 @@
 exports.results = function(req, res){
   var page_props = {
-      name     : 'John'
-    , title    : 'Welcome'
+      title    : 'Welcome'
     , front_end_css_includes : [
       "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
     , "https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css"

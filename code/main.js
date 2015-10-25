@@ -21,6 +21,7 @@ require('./results/load.js')({app: app});
 require('./sign_up/load.js')({app: app});
 require('./sign_up_failed/load.js')({app: app});
 require('./sign_up_success/load.js')({app: app});
+require('./getStatistics/load.js')({app: app, conn: conn});
 require('./register/load.js')({ app: app, conn: conn, sms: sms});
 require("./scrample/scrample.js")({app:app, wordnet: wordnet, conn: conn});
 require("./game/load.js")({ app: app, conn: conn, sms: sms});
