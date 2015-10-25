@@ -4,3 +4,5 @@
 .space_top {
   margin-top: 20px;
 }
+
+span.glyphicon.glyphicon-user { top: 0px; }
