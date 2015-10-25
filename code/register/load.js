@@ -5,8 +5,13 @@ module.exports = function(params)
       sms  = params.sms;
   app.post('/register', function (req, res) {
     var name = req.body.name,
-        phone = req.body.phone,
+        phone = req.body.phone || '',
         user  = {user_name: name, phone_number: phone };
+
+    if (new RegExp("^\\d+$").test(phone.replace(/\D/g, '').replace(' ', ''))) {
+       res.render('../views/sign_in_failed.jsx', { name: name, title: 'Sign In Failed' });
+       return;
+    }
 
     conn.query("SELECT id from users WHERE phone_number = ?", [phone], function (err, result) {
         if (err) {

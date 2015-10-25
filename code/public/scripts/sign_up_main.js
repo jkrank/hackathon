@@ -5,7 +5,7 @@ var page = {};
 
   lib.normalizeNumber = function (p_number) {
     var first_seven;
-    p_number = p_number.replace(/\D/g, '');
+    p_number = p_number.replace(/\D/g, '').replace(' ', '');
     first_seven = p_number.indexOf('7');
 
     if (first_seven !== -1) {
@@ -27,10 +27,7 @@ var page = {};
   lib.handleForm = function (e) {
      var $form = $(this);
      if (lib.isMobile($form.find("input[name='phone']").val())) {
-       //return true;
-       console.log("OK");
-     } else {
-       console.log("KO");
+       return true;
      }
      e.preventDefault();
      return false;
