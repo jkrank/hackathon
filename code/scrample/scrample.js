@@ -8,7 +8,7 @@ module.exports = function (params) {
     var sentence = req.query.sentence,
         difficulty,
         count = 0;
-    difficulty = Math.round(Math.random() * 100);
+    difficulty = Math.round(Math.random() * 10);
     callback = function(a) {
       console.log(count);
       if (count===difficulty) {
